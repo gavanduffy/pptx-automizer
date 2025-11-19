@@ -42,6 +42,8 @@ If you require commercial support for complex .pptx automation, you can explore 
   - [Remove elements from a slide](#remove-elements-from-a-slide)
   - [Hyperlink Management](#hyperlink-management)
 
+- [MCP Server](#mcp-server)
+  - [JSON-Based Slideshow Generation](#json-based-slideshow-generation)
 - [Tipps and Tricks](#tipps-and-tricks)
   - [Loop through the slides of a presentation](#loop-through-the-slides-of-a-presentation)
   - [Quickly get all slide numbers of a template](#quickly-get-all-slide-numbers-of-a-template)
@@ -788,6 +790,111 @@ slide.generate((pptxGenJSSlide) => {
   });
 });
 ```
+
+# MCP Server
+
+`pptx-automizer` includes a Model Context Protocol (MCP) server that allows JSON-based slideshow generation. This enables dynamic presentation creation through a standardized interface, making it easy to integrate with MCP-compatible clients and AI assistants.
+
+## JSON-Based Slideshow Generation
+
+The MCP server provides a `generate_slideshow` tool that accepts JSON configuration for:
+- Dynamic text placeholder replacements using `{{tag}}` syntax
+- Image replacements with media files
+- Template and slide selection
+- Slide ordering and composition
+
+### Installation and Setup
+
+The MCP server is built automatically when you build the project:
+
+```bash
+$ yarn build
+```
+
+To use it with an MCP client, add it to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "pptx-automizer": {
+      "command": "node",
+      "args": ["/path/to/pptx-automizer/dist/mcp/server.js"]
+    }
+  }
+}
+```
+
+### Example JSON Configuration
+
+```json
+{
+  "templateDir": "./templates",
+  "outputDir": "./output",
+  "mediaDir": "./media",
+  "rootTemplate": "RootTemplate.pptx",
+  "templates": [
+    {
+      "filename": "TextReplace.pptx",
+      "label": "text"
+    }
+  ],
+  "mediaFiles": ["logo.png", "photo.jpg"],
+  "slides": [
+    {
+      "template": "text",
+      "slideNumber": 1,
+      "textReplacements": [
+        {
+          "element": "titleText",
+          "replacements": [
+            {
+              "tag": "title",
+              "text": "Dynamic Presentation"
+            },
+            {
+              "tag": "subtitle",
+              "text": "Generated via MCP",
+              "style": {
+                "size": 12000,
+                "color": {
+                  "type": "srgbClr",
+                  "value": "0066CC"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "imageReplacements": [
+        {
+          "element": "logo",
+          "mediaFile": "logo.png"
+        }
+      ]
+    }
+  ],
+  "outputFilename": "generated-presentation.pptx",
+  "removeExistingSlides": true
+}
+```
+
+### Key Features
+
+- **No Hardcoded Values**: All replacements are passed dynamically via JSON
+- **Template Flexibility**: Load multiple templates and combine slides
+- **Text Styling**: Apply custom text styles including color, size, and formatting
+- **Image Handling**: Replace images with new media files
+- **Multiple Slides**: Generate presentations with multiple slides in a single call
+
+### Detailed Documentation
+
+For complete documentation on the MCP server, including:
+- Full parameter reference
+- Template preparation guidelines
+- Integration examples
+- Troubleshooting tips
+
+See the [MCP Server README](./mcp/README.md).
 
 # Tipps and Tricks
 

@@ -187,7 +187,7 @@ The replacements are fully dynamic and passed via the JSON input, not hardcoded.
 /**
  * Generate a slideshow based on JSON configuration
  */
-async function generateSlideshow(args: any): Promise<{ success: boolean; message: string; outputPath?: string }> {
+async function generateSlideshow(args: Record<string, unknown>): Promise<{ success: boolean; message: string; outputPath?: string }> {
   try {
     // Validate required parameters
     if (!args.templateDir || !args.outputDir || !args.rootTemplate || !args.slides || !args.outputFilename) {
@@ -198,15 +198,15 @@ async function generateSlideshow(args: any): Promise<{ success: boolean; message
     }
 
     // Ensure directories exist
-    if (!fs.existsSync(args.templateDir)) {
+    if (!fs.existsSync(args.templateDir as string)) {
       return {
         success: false,
         message: `Template directory does not exist: ${args.templateDir}`,
       };
     }
 
-    if (!fs.existsSync(args.outputDir)) {
-      fs.mkdirSync(args.outputDir, { recursive: true });
+    if (!fs.existsSync(args.outputDir as string)) {
+      fs.mkdirSync(args.outputDir as string, { recursive: true });
     }
 
     // Create automizer instance
@@ -234,12 +234,13 @@ async function generateSlideshow(args: any): Promise<{ success: boolean; message
     }
 
     // Add slides with modifications
-    for (const slideConfig of args.slides) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const slideConfig of args.slides as any[]) {
       pres = pres.addSlide(slideConfig.template, slideConfig.slideNumber, (slide) => {
         // Apply text replacements
         if (slideConfig.textReplacements && Array.isArray(slideConfig.textReplacements)) {
           for (const textReplacement of slideConfig.textReplacements) {
-            const replacements = textReplacement.replacements.map((r: any) => ({
+            const replacements = textReplacement.replacements.map((r: Record<string, unknown>) => ({
               replace: r.tag,
               by: r.style ? {
                 text: r.text,
@@ -271,8 +272,8 @@ async function generateSlideshow(args: any): Promise<{ success: boolean; message
     }
 
     // Write output file
-    const result = await pres.write(args.outputFilename);
-    const outputPath = path.join(args.outputDir, args.outputFilename);
+    await pres.write(args.outputFilename as string);
+    const outputPath = path.join(args.outputDir as string, args.outputFilename as string);
 
     return {
       success: true,
