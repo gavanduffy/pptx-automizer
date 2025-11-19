@@ -1,0 +1,50 @@
+{
+  "templateDir": "./__tests__/pptx-templates",
+  "outputDir": "./__tests__/pptx-output",
+  "mediaDir": "./__tests__/media",
+  "rootTemplate": "RootTemplate.pptx",
+  "templates": [
+    {
+      "filename": "TextReplace.pptx",
+      "label": "text"
+    }
+  ],
+  "mediaFiles": [
+    "feather.png",
+    "test.png"
+  ],
+  "slides": [
+    {
+      "template": "text",
+      "slideNumber": 1,
+      "textReplacements": [
+        {
+          "element": "replaceText",
+          "replacements": [
+            {
+              "tag": "replace",
+              "text": "Dynamic Content"
+            },
+            {
+              "tag": "by",
+              "text": "Generated via MCP"
+            },
+            {
+              "tag": "replacement",
+              "text": "Success!",
+              "style": {
+                "size": 12000,
+                "color": {
+                  "type": "srgbClr",
+                  "value": "00AA00"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "outputFilename": "mcp-generated.pptx",
+  "removeExistingSlides": true
+}
