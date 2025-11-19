@@ -10,7 +10,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p mcp/tsconfig.json",
+    "build:main": "tsc",
+    "build:mcp": "tsc -p mcp/tsconfig.json",
     "dev": "nodemon -e ts --exec 'ts-node' src/dev.ts",
     "test": "npx jest",
     "test-coverage": "npx jest --coverage",
@@ -23,6 +25,9 @@
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.js",
+  "bin": {
+    "pptx-automizer-mcp": "dist/mcp/server.js"
+  },
   "keywords": [
     "js-create-powerpoint",
     "js-create-pptx",
@@ -58,6 +63,7 @@
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0",
     "@xmldom/xmldom": "^0.9.7",
     "extract-zip": "^2.0.1",
     "jszip": "^3.10.1",
